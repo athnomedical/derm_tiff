@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 from PIL.TiffImagePlugin import ImageFileDirectory_v1
 
-from typing import Any, List, Generator, Tuple
+from typing import Any, List, Generator, Tuple, Dict
 from nptyping import NDArray, Shape
 
 from .io import make_parent_dir
@@ -16,10 +16,10 @@ from .io import make_parent_dir
 class DermTiffImage:
     def __init__(self,
                  bg_image: NDArray[Shape["*, *, 3"], np.uint8],  # [H, W, C]
-                 label2mask: OrderedDict[str,
-                                         NDArray[Shape["*, *"], np.bool_]] = None,
-                 label2color: OrderedDict[str,
-                                          Tuple[np.uint8, np.uint8, np.uint8]] = None,
+                 label2mask: Dict[str,
+                                  NDArray[Shape["*, *"], np.bool_]] = {},
+                 label2color: Dict[str,
+                                   Tuple[np.uint8, np.uint8, np.uint8]] = {},
                  ) -> None:
 
         assert label2color.keys() == label2mask.keys()
@@ -28,9 +28,8 @@ class DermTiffImage:
             assert isinstance(mask, NDArray[Shape["*, *"], np.bool_])
 
         self.bg_image = bg_image
-
-        self.label2mask = label2mask or OrderedDict()
-        self.label2color = label2color or OrderedDict()
+        self.label2mask = OrderedDict(label2mask)
+        self.label2color = OrderedDict(label2color)
 
     @property
     def shape(self):

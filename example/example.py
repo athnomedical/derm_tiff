@@ -1,4 +1,4 @@
-from derm_tiff import load_image
+from derm_tiff import DermTiffImage, load_image
 from PIL import Image
 import os
 import numpy as np
@@ -38,6 +38,14 @@ def main():
 
     # 全体でリサイズも可能
     resized = derm_image.resize(300, 200)
+
+    # DermTiffImageを新たに作成する
+    bg_image = derm_image.bg_image
+    empty_derm_image = DermTiffImage(bg_image=bg_image)
+    new_derm_image = DermTiffImage(bg_image=bg_image,
+                                   label2mask={"page1": np.zeros((H, W),
+                                                                 np.bool_)},
+                                   label2color={"page1": (255, 0, 255)})
 
 
 if __name__ == "__main__":
